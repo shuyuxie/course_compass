@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Query App</title>
+    <style>
+        .picture {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #f00;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .course_query {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #grade {
+            position: absolute;
+            left: 340px;
+            top: 82px;
+            width: 100px;
+            height: 30px;
+            border-radius: 20px;
+        }
+
+        #grade_button {
+            position: absolute;
+            left: 450px;
+            top: 82px;
+            width: 100px;
+            height: 30px;
+            border-radius: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .review_container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .fixed-window {
+            position: relative;
+            height: 150px;
+            width: 90%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 20px auto 0;
+            display: none;
+        }
+
+        .scroll-box {
+            height: 500px;
+            width: 90%;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 20px auto 0;
+            display: none;
+        }
+
+        .input-text {
+            width: calc(100% - 20px);
+            height: 70%;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+
+        /* p {
+            pointer-events: none;
+        } */
+
+        .review-button {
+            height: 40px;
+            position: absolute;
+            bottom: 0px;
+            right: 15px;
+            padding: 5px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .modify-submit-button {
+            position: absolute;
+            height: 30px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            right: 80px;
+
+        }
+
+        .rating-container {
+            height: 30px;
+            position: absolute;
+            bottom: 0px;
+            left: 15px;
+            padding: 5px;
+            border: none;
+        }
+
+        .rating-container .rating-option {
+            width: 50px;
+            height: 30px;
+            border: 1px solid #ccc;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .rating-container .rating-option.selected {
+            background-color: blue;
+            border-color: blue;
+            color: white;
+        }
+
+        .modify-rating-container {
+            height: 30px;
+            position: relative;
+            top: -10px;
+            text-align: left;
+            /* bottom: 0%; 
+            bottom: 0px;
+            left: 15px; */
+            padding: 5px;
+            border: none;
+        }
+
+        .modify-rating-container .modify-rating-option {
+            width: 50px;
+            height: 30px;
+            border: 1px solid #ccc;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .modify-rating-container .rating-option.selected {
+            background-color: blue;
+            border-color: blue;
+            color: white;
+        }
+
+        .report-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 9999;
+        }
+
+        .report-popup {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 9998;
+        }
+
+        .modal {
+            display: none;
+            position: absolute;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #reviewButton {
+            position: absolute;
+            top: 20px;
+            right: 150px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>GPA Query App</h1>
+    <div class="course_query">
+        <form id="queryForm">
+            <label for="course_code">Enter Course Code:</label>
+            <input type="text" id="course_code" name="course_code" required>
+            <!-- <button type="submit">Query GPA</button> -->
+        </form>
+        <select id="grade">
+        </select>
+        <button id="grade_button" onclick="sendGradeQuery()">Query Grade</button>
+    </div>
+
+    <button id="reviewButton" onclick="openModal()">Reviewed Courses</button>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="reviewContent"></div>
+        </div>
+    </div>
+
+
+    <button class="report-btn" onclick="openReportPopup()">Report</button>
+
+    <div class="report-popup" id="reportPopup">
+        <h2>Report</h2>
+        <form onsubmit="submitReport(event)">
+            <label for="Course_Code">Course Code:</label><br>
+            <input type="text" id="Course_Code" name="Course_Code" required><br>
+            <label for="YearTerm">Year Term:</label><br>
+            <select id="YearTerm" name="YearTerm" required>
+                <option value="2010-fa">2010-fa</option>
+                <option value="2010-sp">2010-sp</option>
+                <option value="2010-su">2010-su</option>
+                <option value="2011-fa">2011-fa</option>
+                <option value="2011-sp">2011-sp</option>
+                <option value="2011-su">2011-su</option>
+                <option value="2012-fa">2012-fa</option>
+                <option value="2012-sp">2012-sp</option>
+                <option value="2012-su">2012-su</option>
+                <option value="2013-fa">2013-fa</option>
+                <option value="2013-sp">2013-sp</option>
+                <option value="2013-su">2013-su</option>
+                <option value="2014-fa">2014-fa</option>
+                <option value="2014-sp">2014-sp</option>
+                <option value="2014-su">2014-su</option>
+                <option value="2014-wi">2014-wi</option>
+                <option value="2015-fa">2015-fa</option>
+                <option value="2015-sp">2015-sp</option>
+                <option value="2015-su">2015-su</option>
+                <option value="2015-wi">2015-wi</option>
+                <option value="2016-fa">2016-fa</option>
+                <option value="2016-sp">2016-sp</option>
+                <option value="2016-su">2016-su</option>
+                <option value="2016-wi">2016-wi</option>
+                <option value="2017-fa">2017-fa</option>
+                <option value="2017-sp">2017-sp</option>
+                <option value="2017-su">2017-su</option>
+                <option value="2017-wi">2017-wi</option>
+                <option value="2018-fa">2018-fa</option>
+                <option value="2018-sp">2018-sp</option>
+                <option value="2018-su">2018-su</option>
+                <option value="2018-wi">2018-wi</option>
+                <option value="2019-fa">2019-fa</option>
+                <option value="2019-sp">2019-sp</option>
+                <option value="2019-su">2019-su</option>
+                <option value="2019-wi">2019-wi</option>
+                <option value="2020-fa">2020-fa</option>
+                <option value="2020-sp">2020-sp</option>
+                <option value="2020-su">2020-su</option>
+                <option value="2020-wi">2020-wi</option>
+                <option value="2021-fa">2021-fa</option>
+                <option value="2021-sp">2021-sp</option>
+                <option value="2021-su">2021-su</option>
+                <option value="2021-wi">2021-wi</option>
+                <option value="2022-fa">2022-fa</option>
+                <option value="2022-sp">2022-sp</option>
+                <option value="2022-su">2022-su</option>
+                <option value="2022-wi">2022-wi</option>
+                <option value="2023-sp">2023-sp</option>
+                <option value="2023-su">2023-su</option>
+                <option value="2023-fa">2023-su</option>
+                <option value="2023-wi">2023-su</option>
+                <option value="2024-sp">2023-su</option>
+            </select><br>
+
+            <label for="PrimaryInstructor">Primary Instructor:</label><br>
+            <input type="text" id="PrimaryInstructor" name="PrimaryInstructor" required><br>
+            <label for="Number_of_A+">Number of A+:</label><br>
+            <input type="number" id="Number_of_A+" name="Number_of_A+" min="0" value="0"><br>
+
+            <label for="Number_of_A">Number of A:</label><br>
+            <input type="number" id="Number_of_A" name="Number_of_A" min="0" value="0"><br>
+
+            <label for="Number_of_A-">Number of A-:</label><br>
+            <input type="number" id="Number_of_A-" name="Number_of_A-" min="0" value="0"><br>
+
+            <label for="Number_of_B+">Number of B+:</label><br>
+            <input type="number" id="Number_of_B+" name="Number_of_B+" min="0" value="0"><br>
+
+            <label for="Number_of_B">Number of B:</label><br>
+            <input type="number" id="Number_of_B" name="Number_of_B" min="0" value="0"><br>
+
+            <label for="Number_of_B-">Number of B-:</label><br>
+            <input type="number" id="Number_of_B-" name="Number_of_B-" min="0" value="0"><br>
+
+            <label for="Number_of_C+">Number of C+:</label><br>
+            <input type="number" id="Number_of_C+" name="Number_of_C+" min="0" value="0"><br>
+
+            <label for="Number_of_C">Number of C:</label><br>
+            <input type="number" id="Number_of_C" name="Number_of_C" min="0" value="0"><br>
+
+            <label for="Number_of_C-">Number of C-:</label><br>
+            <input type="number" id="Number_of_C-" name="Number_of_C-" min="0" value="0"><br>
+
+            <label for="Number_of_D+">Number of D+:</label><br>
+            <input type="number" id="Number_of_D+" name="Number_of_D+" min="0" value="0"><br>
+
+            <label for="Number_of_D">Number of D:</label><br>
+            <input type="number" id="Number_of_D" name="Number_of_D" min="0" value="0"><br>
+
+            <label for="Number_of_D-">Number of D-:</label><br>
+            <input type="number" id="Number_of_D-" name="Number_of_D-" min="0" value="0"><br>
+
+            <label for="Number_of_F">Number of F:</label><br>
+            <input type="number" id="Number_of_F" name="Number_of_F" min="0" value="0"><br>
+
+            <label for="Number_of_W">Number of W:</label><br>
+            <input type="number" id="Number_of_W" name="Number_of_W" min="0" value="0"><br>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="result"></div>
+    <!-- <div class="picture">
+        This is a corner div
+    </div> -->
+    <img src="" id="gradeimg">
+    <table id="myTable">
+        <thead id="tableHead">
+            <!-- Table head content will be added dynamically -->
+        </thead>
+        <tbody>
+            <!-- Table body content will be added dynamically -->
+        </tbody>
+    </table>
+    <div class="review_container">
+
+        <div class="scroll-box" id="review">
+        </div>
+
+        <div class="fixed-window" id="addreview">
+            <input type="text" class="input-text" placeholder="enter your review...">
+            <div class="rating-container">
+                <span>Rate:</span>
+                <div class="rating-option" data-value="1">1</div>
+                <div class="rating-option" data-value="2">2</div>
+                <div class="rating-option" data-value="3">3</div>
+                <div class="rating-option" data-value="4">4</div>
+                <div class="rating-option" data-value="5">5</div>
+            </div>
+            <button class="review-button">submit review</button>
+        </div>
+    </div>
+    <script>
+        var Course_Code;
+        var Content;
+        var Rate;
+        var YearTerm;
+        var ratedict = {};
+        var UserId = getParameterByName('UserId');
+        var ratingOptions = document.querySelectorAll('.rating-option');
+        ratingOptions.forEach(function (option) {
+            option.addEventListener('click', function () {
+                Rate = option.getAttribute('data-value')
+                ratingOptions.forEach(function (opt) {
+                    opt.classList.remove('selected');
+                });
+
+                option.classList.add('selected');
+            });
+        });
+        var grade = document.getElementById("grade");
+        var course_code_block = document.getElementById('course_code');
+        course_code_block.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
+        });
+        var years = [
+            "2010-fa", "2010-sp", "2010-su",
+            "2011-fa", "2011-sp", "2011-su",
+            "2012-fa", "2012-sp", "2012-su",
+            "2013-fa", "2013-sp", "2013-su",
+            "2014-fa", "2014-sp", "2014-su", "2014-wi",
+            "2015-fa", "2015-sp", "2015-su", "2015-wi",
+            "2016-fa", "2016-sp", "2016-su", "2016-wi",
+            "2017-fa", "2017-sp", "2017-su", "2017-wi",
+            "2018-fa", "2018-sp", "2018-su", "2018-wi",
+            "2019-fa", "2019-sp", "2019-su", "2019-wi",
+            "2020-fa", "2020-sp", "2020-su", "2020-wi",
+            "2021-fa", "2021-sp", "2021-su", "2021-wi",
+            "2022-fa", "2022-sp", "2022-su", "2022-wi",
+            "2023-sp", "2023-su"
+        ];
+
+        // 添加年份选项
+        years.forEach(function (year) {
+            var option = document.createElement("option");
+            option.text = year;
+            option.value = year;
+            grade.add(option);
+        });
+        var sendgradequery;
+        grade.addEventListener("change", function () {
+            sendgradequery = grade.options[grade.selectedIndex].value;
+        });
+        function sendGradeQuery() {
+            var CourseCode = document.getElementById('course_code').value;
+            Course_Code = CourseCode;
+            var sendgradequery = document.getElementById('grade').value;
+            YearTerm = sendgradequery;
+            if (CourseCode.trim() === '') {
+                alert("enter a course");
+                return
+            };
+            // if (!selectedOption || selectedOption === "default") {
+            //     alert("select a Year-Term");
+            //     return;
+            // };
+            var data = {
+                Course_Code: CourseCode,
+                YearTerm: sendgradequery
+            };
+            Course_Code = CourseCode;
+            fetch('/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(jsonData => {
+                    document.getElementById('result').innerHTML = 'Course Code: ' + jsonData.Course_Code +
+                        '<br>Introduction: ' + jsonData.Introduction + '..........' +
+                        '<br>Average GPA: ' + jsonData.AverageGPA;
+                    // '\nSubject Code: ' + jsonData.Subject_Code + 
+                    // '\nGened Type ID: ' + jsonData.Gened_Type_ID;
+                    // console.log(jsonData.GPA);
+                    Course_Code = jsonData.Course_Code;
+                    showreview(jsonData.Reviews);
+                    const imageUrl = jsonData.Grade_Distribution_Chart;
+                    const imgElement = document.getElementById('gradeimg');
+                    imgElement.src = "data:image/png;base64," + imageUrl;
+                    addRow(jsonData.GPA);
+                    
+
+
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+        function update_query() {
+            var CourseCode = Course_Code;
+            var sendgradequery = YearTerm;
+            if (CourseCode.trim() === '') {
+                alert("enter a course");
+                return
+            };
+            // if (!selectedOption || selectedOption === "default") {
+            //     alert("select a Year-Term");
+            //     return;
+            // };
+            var data = {
+                Course_Code: CourseCode,
+                YearTerm: sendgradequery
+            };
+            Course_Code = CourseCode;
+            fetch('/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(jsonData => {
+                    document.getElementById('result').innerHTML = 'Course Code: ' + jsonData.Course_Code +
+                        '<br>Introduction: ' + jsonData.Introduction + '..........' +
+                        '<br>Average GPA: ' + jsonData.AverageGPA;
+                    // '\nSubject Code: ' + jsonData.Subject_Code + 
+                    // '\nGened Type ID: ' + jsonData.Gened_Type_ID;
+                    // console.log(jsonData.GPA);
+                    showreview(jsonData.Reviews);
+
+                    const imageUrl = jsonData.Grade_Distribution_Chart;
+                    const imgElement = document.getElementById('gradeimg');
+                    imgElement.src = "data:image/png;base64," + imageUrl;
+                    addRow(jsonData.GPA);
+                    
+
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        }
+        function clearTable() {
+            var table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+            table.innerHTML = "";
+
+            var tableHead = document.getElementById("tableHead");
+            tableHead.innerHTML = "";
+        }
+
+        function addRow(GPA) {
+            clearTable();
+
+            var table = document.getElementById("myTable").getElementsByTagName('tbody')[0];
+            var tableHead = document.getElementById("tableHead");
+
+            var newHeadRow = tableHead.insertRow();
+            for (var key in GPA[0]) {
+
+                if (GPA[0].hasOwnProperty(key)) {
+                    var headCell = newHeadRow.insertCell();
+                    headCell.innerHTML = key;
+                }
+            }
+
+
+            for (var i = 0; i < GPA.length; i++) {
+                var newRow = table.insertRow();
+                for (var key in GPA[i]) {
+                    if (GPA[i].hasOwnProperty(key)) {
+                        var cell = newRow.insertCell();
+                        cell.innerHTML = GPA[i][key];
+                    }
+                }
+            }
+        }
+        function showreview(review) {
+            var scrollBox = document.getElementById("review");
+            var addreview = document.getElementById("addreview");
+            scrollBox.style.display = "block";
+            addreview.style.display = "block";
+            scrollBox.innerHTML = "";
+            review.forEach(function (item, index) {
+                var newItem = document.createElement("div");
+
+                var contentElement = document.createElement("p");
+                contentElement.textContent = item["Content"];
+                newItem.appendChild(contentElement);
+
+                var ReviewID = item["ReviewID"];
+                var infoAndButtons = document.createElement("p");
+                infoAndButtons.style.zIndex = "1";
+                infoAndButtons.textContent = "Rate: " + item["Rate"] + " | ReviewID: " + item["ReviewID"] + " | Time: " + item["Time"] + " | UserId: " + item["UserId"];
+                infoAndButtons.style.textAlign = "right";
+
+
+                var modifyButton = document.createElement("button");
+                modifyButton.textContent = "Modify";
+                modifyButton.style.marginLeft = "10px";
+                infoAndButtons.appendChild(modifyButton);
+
+
+                var deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.setAttribute("data-review-id", item["ReviewID"]);
+                deleteButton.style.marginLeft = "10px";
+                infoAndButtons.appendChild(deleteButton);
+
+
+                deleteButton.addEventListener("click", function (event) {
+                    var reviewId = event.target.getAttribute("data-review-id");
+                    fetch('/delete_review', {
+                        method: 'DELETE',
+                        body: JSON.stringify({ ReviewID: reviewId }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                update_query();
+                            } else {
+                                update_query();
+                                console.error("Failed to delete review with ID", reviewId);
+                            }
+                        })
+                        .catch(error => {
+                            update_query();
+                            console.error('Error:', error);
+                        });
+                });
+
+
+                modifyButton.addEventListener("click", function (event) {
+
+                    var newratevalue;
+                    infoAndButtons.removeChild(deleteButton);
+                    infoAndButtons.removeChild(modifyButton);
+                    infoAndButtons.textContent = "";
+
+                    var editableContent = document.createElement("textarea");
+                    editableContent.value = item["Content"];
+                    editableContent.style.width = "100%";
+                    newItem.replaceChild(editableContent, contentElement);
+
+                    var submitButton = document.createElement("button");
+                    submitButton.textContent = "Submit";
+                    submitButton.style.marginLeft = "10px";
+                    submitButton.style.width = "100px";
+                    submitButton.classList.add("modify-submit-button");
+
+                    infoAndButtons.appendChild(submitButton);
+                    submitButton.style.zIndex = "2";
+                    submitButton.addEventListener("click", function (event) {
+                        var newContent = editableContent.value;
+
+                        fetch('/update_review', {
+                            method: 'PUT',
+                            body: JSON.stringify({ ReviewID: item["ReviewID"], Content: newContent, Rate: newratevalue }),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then(response => {
+                                if (response.ok) {
+                                    update_query();
+                                } else {
+                                    console.error("Failed to update review with ID", item["ReviewID"]);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                    });
+
+
+
+                    var rateSelect = document.createElement("div");
+                    infoAndButtons.appendChild(rateSelect);
+                    rateSelect.textContent = "Rate: ";
+                    // rateSelect.style.left = "10px";
+                    rateSelect.classList.add("modify-rating-container");
+
+                    var selectedOption = null;
+                    for (var i = 1; i <= 5; i++) {
+                        var option = document.createElement("div");
+                        rateSelect.appendChild(option);
+                        option.textContent = i;
+                        option.classList.add("modify-rating-option");
+                        option.dataset.value = i;
+
+                        option.addEventListener("click", function () {
+                            if (selectedOption !== null) {
+                                selectedOption.style.backgroundColor = '';
+                            }
+                            selectedOption = this;
+                            selectedOption.style.backgroundColor = 'blue';
+
+                            newratevalue = this.dataset.value;
+                        });
+
+                    }
+
+
+
+
+                });
+
+                newItem.appendChild(infoAndButtons);
+                scrollBox.appendChild(newItem);
+
+                if (index < review.length - 1) {
+                    var separator = document.createElement("hr");
+                    scrollBox.appendChild(separator);
+                }
+            });
+
+
+        }
+
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+
+        var ReviewButton = document.querySelector('.review-button');
+
+        ReviewButton.addEventListener('click', function () {
+            var Content = document.querySelector('.input-text').value;
+
+            var review_data = {
+                Course_Code: Course_Code,
+                Content: Content,
+                Rate: parseInt(Rate),
+                UserId: UserId
+            };
+
+            fetch('/add_review', {
+                method: 'POST',
+                body: JSON.stringify(review_data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        update_query();
+                        document.querySelector('.input-text').value = '';
+                        document.querySelector('.input-text').placeholder = 'enter your review...';
+                    } else if (response.status === 400) {
+                        response.json().then(data => {
+
+                            alert(data.error);
+                            console.error('Request failed:', data.error);
+                        });
+                    } else {
+                        document.querySelector('.input-text').value = '';
+                        document.querySelector('.input-text').placeholder = 'enter your review...';
+                        console.error('Request failed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+        function openReportPopup() {
+            document.getElementById("reportPopup").style.display = "block";
+        }
+
+        function submitReport(event) {
+            event.preventDefault(); // 阻止表单默认提交行为
+
+            // 获取输入的报告内容
+            var YearTerm = document.getElementById("YearTerm").value;
+            var PrimaryInstructor = document.getElementById("PrimaryInstructor").value;
+            var Course_Code = document.getElementById("Course_Code").value;
+            var Number_of_A_plus = document.getElementById("Number_of_A+").value;
+            var Number_of_A = document.getElementById("Number_of_A").value;
+            var Number_of_A_minus = document.getElementById("Number_of_A-").value;
+            var Number_of_B_plus = document.getElementById("Number_of_B+").value;
+            var Number_of_B = document.getElementById("Number_of_B").value;
+            var Number_of_B_minus = document.getElementById("Number_of_B-").value;
+            var Number_of_C_plus = document.getElementById("Number_of_C+").value;
+            var Number_of_C = document.getElementById("Number_of_C").value;
+            var Number_of_C_minus = document.getElementById("Number_of_C-").value;
+            var Number_of_D_plus = document.getElementById("Number_of_D+").value;
+            var Number_of_D = document.getElementById("Number_of_D").value;
+            var Number_of_D_minus = document.getElementById("Number_of_D-").value;
+            var Number_of_F = document.getElementById("Number_of_F").value;
+            var Number_of_W = document.getElementById("Number_of_W").value;
+
+            var report_data = {
+                Course_Code: Course_Code,
+                YearTerm: YearTerm,
+                PrimaryInstructor: PrimaryInstructor,
+                'Number_of_A+': Number_of_A_plus,
+                'Number_of_A': Number_of_A,
+                'Number_of_A-': Number_of_A_minus,
+                'Number_of_B+': Number_of_B_plus,
+                'Number_of_B': Number_of_B,
+                'Number_of_B-': Number_of_B_minus,
+                'Number_of_C+': Number_of_C_plus,
+                'Number_of_C': Number_of_C,
+                'Number_of_C-': Number_of_C_minus,
+                'Number_of_D+': Number_of_D_plus,
+                'Number_of_D': Number_of_D,
+                'Number_of_D-': Number_of_D_minus,
+                'Number_of_F': Number_of_F,
+                'Number_of_W': Number_of_W
+            };
+
+            fetch('/insert_grade', {
+                method: 'POST',
+                body: JSON.stringify(report_data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // update_query();
+                        closeReportPopup();
+                        alert("Report submitted successfully!");
+                    } else {
+                        console.error('Request failed');
+                        alert("Failed to submit report. Please try again later or the log has already existed.");
+                    }
+                })
+                .catch(error => {
+                    // console.error('Error:', error);
+                    // alert("An error occurred while submitting the report.");
+                    alert("Report submitted successfully!");
+                    // update_query();
+                    closeReportPopup();
+
+                });
+        }
+
+        function closeReportPopup() {
+            document.getElementById("reportPopup").style.display = "none";
+        }
+        function openModal() {
+            var userId = getUserId();
+            const url = '/get_user_reviews?user_id=' + userId; 
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    var reviews = data.user_reviews;
+
+
+                    var modalContent = document.getElementById("reviewContent");
+                    modalContent.innerHTML = '';
+
+
+                    reviews.forEach((review, index) => {
+                        var reviewHTML = '<div style="border: 1px solid black; padding: 10px; margin-bottom: 10px;">';
+                        reviewHTML += '<p>Course Code: ' + review.Course_Code + '</p>';
+                        reviewHTML += '<p>Course Introduction: ' + review.Course_Introduction + '</p>';
+                        reviewHTML += '<p>Course Average GPA: ' + review.Course_AverageGPA + '</p>';
+                        reviewHTML += '<p>User Review Count: ' + review.User_Review_Count + '</p>';
+                        reviewHTML += '<p>User Average Rate: ' + review.User_Average_Rate + '</p>';
+                        reviewHTML += '</div>';
+                        modalContent.innerHTML += reviewHTML;
+
+
+                        if (index !== reviews.length - 1) {
+                            modalContent.innerHTML += '<hr style="margin-bottom: 10px;">';
+                        }
+                    });
+
+                    var modal = document.getElementById("myModal");
+                    modal.style.display = "block";
+                })
+                .catch(error => {
+                    console.error('Error fetching reviews:', error);
+                    alert("An error occurred while fetching reviews.");
+                });
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+
+        function getUserId() {
+            return UserId;
+        }
+
+
+    </script>
+</body>
+
+</html>

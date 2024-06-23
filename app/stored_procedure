@@ -1,0 +1,27 @@
+DELIMITER $$
+
+CREATE PROCEDURE GetUserReviewedCourses(IN user_id VARCHAR(255))
+BEGIN
+
+    CREATE TEMPORARY TABLE IF NOT EXISTS UserCourseReviewDetails (
+        Course_Code VARCHAR(255),
+        Course_Introduction VARCHAR(255),
+        Course_AverageGPA DOUBLE,
+        User_Review_Count INT,
+        User_Average_Rate DOUBLE
+    );
+
+
+    INSERT INTO UserCourseReviewDetails (Course_Code, Course_Introduction, Course_AverageGPA, User_Review_Count, User_Average_Rate)
+    SELECT c.Course_Code, c.Introduction, c.AverageGPA, COUNT(r.ReviewID), AVG(r.Rate)
+    FROM Course c
+    JOIN Review r ON c.Course_Code = r.Course_Code
+    WHERE r.UserId = user_id
+    GROUP BY c.Course_Code, c.Introduction, c.AverageGPA;
+
+    
+    SELECT * FROM UserCourseReviewDetails;
+    DROP TEMPORARY TABLE UserCourseReviewDetails;
+END$$
+
+DELIMITER ;

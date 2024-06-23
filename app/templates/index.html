@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UIUC COURSE QUERY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .title {
+            font-family: Arial, sans-serif;
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #007bff;
+            /* 蓝色 */
+            text-align: center;
+            margin-top: 20vh;
+            /* Changed from margin-bottom */
+        }
+
+        .title::before,
+        .title::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 2px;
+            background-color: #007bff;
+            /* 蓝色 */
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+
+        .title::before {
+            margin-right: 20px;
+        }
+
+        .title::after {
+            margin-left: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 25vh;
+            /* Add margin-top for spacing */
+        }
+
+        .button {
+            padding: 15px 30px;
+            font-size: 28px;
+            margin: 0 40px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            /* 10% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /* Could be more or less, depending on screen size */
+            border-radius: 5px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        /* Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            animation: pulse 5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* .waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
+            animation: moveWaves 5s linear infinite;
+            transform: translateX(0%);
+            z-index: -1;
+        }
+
+        @keyframes moveWaves {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        } */
+    </style>
+</head>
+
+<body>
+    <div class="title">UIUC COURSE QUERY</div>
+    <div class="button-container">
+        <button class="button" id="signUpBtn">Sign Up</button>
+        <button class="button" id="signInBtn">Sign In</button>
+    </div>
+
+    <!-- SignUp Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="signupForm">
+                <label for="signupId">ID:</label>
+                <input type="text" id="signupId" name="id"><br><br>
+                <label for="signupPassword">Password:</label>
+                <input type="password" id="signupPassword" name="password"><br><br>
+                <label for="signupGender">Gender:</label>
+                <input type="text" id="signupGender" name="gender"><br><br>
+                <label for="signupAge">Age:</label>
+                <input type="text" id="signupAge" name="age"><br><br>
+                <label for="signupDegree">Degree:</label>
+                <input type="text" id="signupDegree" name="degree"><br><br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+    <div class="back_container">
+        <div class="circle" style="width: 30px; height: 30px; background-color: #4facfe; top: 20%; left: 30%;"></div>
+        <div class="circle" style="width: 50px; height: 50px; background-color: #ff5e57; top: 50%; left: 50%;"></div>
+        <div class="circle" style="width: 80px; height: 80px; background-color: #f6e58d; top: 70%; left: 20%;"></div>
+        <div class="circle" style="width: 40px; height: 40px; background-color: #10ac84; top: 40%; left: 80%;"></div>
+        <div class="circle" style="width: 60px; height: 60px; background-color: #5758BB; top: 80%; left: 70%;"></div>
+        <div class="circle" style="width: 90px; height: 90px; background-color: #6A89CC; top: 10%; left: 60%;"></div>
+        <div class="circle" style="width: 70px; height: 70px; background-color: #f78fb3; top: 30%; left: 40%;"></div>
+        <div class="circle" style="width: 45px; height: 45px; background-color: #f9ca24; top: 60%; left: 10%;"></div>
+        <div class="circle" style="width: 55px; height: 55px; background-color: #ff793f; top: 85%; left: 90%;"></div>
+        <div class="circle" style="width: 75px; height: 75px; background-color: #686de0; top: 15%; left: 75%;"></div>
+        <div class="circle" style="width: 35px; height: 35px; background-color: #e056fd; top: 65%; left: 30%;"></div>
+        <div class="circle" style="width: 85px; height: 85px; background-color: #00b894; top: 50%; left: 55%;"></div>
+        <div class="circle" style="width: 65px; height: 65px; background-color: #6ab04c; top: 25%; left: 85%;"></div>
+        <div class="circle" style="width: 25px; height: 25px; background-color: #eb4d4b; top: 90%; left: 20%;"></div>
+    </div>
+    <div class="waves"></div>
+    <div <!-- SignIn Modal -->
+        <div id="signinModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <form id="signinForm">
+                    <label for="signInId">ID:</label>
+                    <input type="text" id="signInId" name="id"><br><br>
+                    <label for="signInPassword">Password:</label>
+                    <input type="password" id="signInPassword" name="password"><br><br>
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            // Get the modal
+            var modal = document.getElementById("signupModal");
+            // Get the modal
+            var inmodal = document.getElementById("signinModal");
+            // Get the button that opens the modal
+            var btn = document.getElementById("signUpBtn");
+
+            // Get the button that opens the modal
+            var inbtn = document.getElementById("signInBtn");
+            // Get the <span> element that closes the modal
+
+            var span = document.getElementsByClassName("close")[0];
+            var span2 = document.getElementsByClassName("close")[1];
+            // When the user clicks the button, open the modal 
+            btn.onclick = function () {
+                modal.style.display = "block";
+            }
+            inbtn.onclick = function () {
+                inmodal.style.display = "block"
+            }
+
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+            span2.onclick = function () {
+                inmodal.style.display = "none";
+            }
+
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            window.onclick = function (event) {
+                if (event.target == signupModal) {
+                    signupModal.style.display = "none";
+
+                }
+                if (event.target == signinModal) {
+                    signinModal.style.display = "none";
+                }
+            }
+
+            // Form submission
+            document.getElementById("signupForm").addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent default form submission
+                var id = document.getElementById("signupId").value;
+                var password = document.getElementById("signupPassword").value;
+                var gender = document.getElementById("signupGender").value;
+                var age = document.getElementById("signupAge").value;
+                var degree = document.getElementById("signupDegree").value;
+
+                var data = {
+                    id: id,
+                    password: password,
+                    gender: gender,
+                    age: age,
+                    degree: degree
+                };
+
+                // Send data to Flask backend
+                fetch('/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json(); // Assuming backend returns JSON response
+                        } else {
+                            throw new Error('Sign Up failed!');
+                        }
+                    })
+                    .then(responseData => {
+                        // Handle response data if needed
+                        console.log(responseData);
+                        alert('Sign Up successful!');
+                        modal.style.display = "none"; // Close modal after successful submission
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Sign Up failed!');
+                    });
+            });
+
+            document.getElementById("signinForm").addEventListener("submit", function (event) {
+                // Get the ID and password from input fields
+                event.preventDefault(); // Prevent default form submission
+                var id = document.getElementById("signInId").value;
+                var password = document.getElementById("signInPassword").value;
+                // Create an object to send to the Flask backend
+                var data = {
+                    id: id,
+                    password: password
+                };
+                // Send a POST request to the Flask backend
+                fetch('/signin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Handle the response from the Flask backend
+                        if (data.status === "ok") {
+                            alert("Login successful!");
+                            // Close the current window and redirect to another page
+                            window.close(); // Close current window
+                            window.open('search?UserId=' + encodeURIComponent(id), '_blank'); // Open another page in a new window
+                        } else {
+                            alert("Login failed: " + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                        alert("Login failed. Please try again later.");
+                    });
+            });
+        </script>
+
+</body>
+
+</html>
+
+<!-- Path: sp24-cs411-team050-DROPTABLEusers/app/templates/index.html -->
